@@ -1,0 +1,150 @@
+﻿@model Moody.Helper.cPageHelper
+@using Moody.MultiResources
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section icerik{
+    <!-- BEGIN PAGE CONTENT-->
+    <div class="row-fluid">
+        <div class="span9">
+            <div class="widget">
+                <div class="widget-title">
+                    <h4><i class="icon-edit"></i>@Multi.wMoodTunnel</h4>
+                    <span class="tools">
+                        <a href="javascript:;" class="icon-chevron-down"></a>
+                        <a href="javascript:;" class="icon-remove"></a>
+                    </span>
+                </div>
+                <div class="widget-body">
+                    <!--begin blog post-->
+
+                    @{
+                        //string isLike = @ViewData["isLike"].ToString();
+                        string isLike = " ";
+                        string like = " ";
+                        //string isLike = @ViewData["isLike"].ToString();
+                        if (Model._myLİke)
+                        {
+                            isLike = "red";
+                            like = Multi.wLiked;
+                        }
+                        else
+                        {
+                            isLike = " ";
+                            like = Multi.wLike;
+                        }
+                        }
+                                @{string[] typeM = @Model.moodHelper.moodType.moodType.Split('.');}
+
+                        <div class="row-fluid blog">
+                            <div class="span4">
+                                <img src="~/Content/moods/@Model.moodHelper.moodType.moodType" alt=""/>
+                            </div>
+                            <div class="span8">
+                                <div class="date">
+                                    <p class="day">@Model.moodHelper.createDate.Day</p>
+                                    <p class="month">@Model.moodHelper.createDate.ToString("MMMM")</p>
+                                </div>
+                                <h2>
+                                    <a href="blog_details.html">@Model.moodHelper.user.username : @Multi.wFeels @typeM[0]</a>
+                                </h2>
+                                <p>
+                                    @Multi.wBy <a href="javascript:;">@Model.moodHelper.user.username</a>
+                                </p>
+                                <p style="word-wrap: break-word">
+                                    @Html.DisplayFor(modelitem => Model.moodHelper.moodReason)
+                                </p>
+                                <ul style="height:20px">
+                                    <li><a href="javascript:;"><i class="icon-comments-alt"></i>(@Model.moodHelper.commentCount) @Multi.wComments</a></li>
+                                    <li>@using (Html.BeginForm())
+                                        { <a href="@Url.Action("Liked", "Home", new { id = Model.moodHelper.id })" style="color:@isLike"><i class="icon-heart @isLike"></i> @like </a>}</li>
+                                    <li style="margin-left: -10px">@using (Html.BeginForm())
+                                                                   {<a>(@Model.moodHelper.likeCount)</a>}</li>
+                                    @*<li><a href="javascript:;"><i class="icon-share"></i>34 Shares</a></li>*@
+                                </ul>
+                                @*<a href="blog_details.html" class="btn btn-info">Continue Reading</a>*@
+                            </div>
+                        </div>
+                        <hr>
+                    
+                    <!--end blog post-->
+                    <div class="media">
+                        <h3>@Multi.wComments</h3>
+                        <hr>
+                        @foreach(var item in Model.commentHelper)
+                        {
+                        <a class="pull-left" href="#">
+                            <img class="media-object" src="~/Content/img/avatar1.jpg" alt="">
+                        </a>
+                        <div class="media-body">
+                            <h4 class="media-heading">@item.userName </h4>
+                            <span>@item.createDate | <a href="#">Like</a></span>
+                            <p>@item.comment</p>
+                            <hr>
+                        </div>
+                        }
+                    </div>
+
+                    @using(Html.BeginForm("sendComment","Comment",FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.Hidden("hidid",Model.moodHelper.id)
+                    <div class="post-comment">
+                        <h3>@Multi.wPostComment</h3>
+                        <form>
+                            <label>@Multi.wMessage</label>
+                            @Html.TextArea("comm",new{@class="span10",@rows=8})
+                            <p>
+                                <button type="submit" class="btn btn-info">@Multi.wPostComment</button></p>
+                            @Html.ValidationMessage("nullComment")
+                            @Html.ValidationMessage("aProblem")
+                        </form>
+                    </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+        <div class="span3">
+            <div class="blog-side-bar">
+                <div class="text-center profile-pic" style="border: outset; height: 200px; width: 150px; margin: auto; vertical-align: middle">
+                    <p style="text-align: center; vertical-align: central">
+                        <img src="~/Content/img/avatar.png" alt="" style="height: 200px; width: 150px;"></p>
+                </div>
+                <br />
+                <hr>
+
+                <h2>@Multi.wHowDoYouFeel</h2>
+                
+
+                @using (Html.BeginForm("Index","Comment",FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <br />
+                    <div id="myDropdown">
+                    </div>
+                    @Html.Hidden("dd")
+                    @Html.ValidationMessage("feelEmpty")
+                           
+                    <hr>
+                    <h2>@Multi.wWhy </h2>
+                    <br />
+                    <div class="control-group">
+                        <div class="controls">
+                            @*<textarea class="input-large" rows="3" name="txtReason"></textarea>*@
+                            @Html.TextArea("txtReason", new { @class = "input-large" })
+                        </div>
+                    </div>
+                    <button class="btn btn-success"><i class="icon-ok icon-white"></i>@Multi.wApproveBtn</button>
+                    <hr>
+                }
+
+            </div>
+        </div>
+    </div>
+    <!-- END PAGE CONTENT-->
+}
